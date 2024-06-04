@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu and Cart</title>
+    <style>
+         /* CSS for styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url('background.jpg') no-repeat center center fixed;
+            background-size: cover;
+            background-color: green; /* Change background color to green */
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .menu-item button,
+        .view-cart-btn,
+        .refresh-btn,
+        .confirm-order-btn,
+        .change-btn,
+        .restock-btn {
+            background-color: red;
+            color: #fff; /* White text */
+            border: none; /* Remove button border */
+            border-radius: 20px; /* Make button round */
+            padding: 10px 20px; /* Adjust button padding */
+            margin-top: 20px;
+            cursor: pointer;
+            font-size: 16px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .menu-item {
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between; /* Align items with space between */
+        }
+
+        .item {
+            flex: 0 0 calc(30% - 20px); /* Approximately one-third of the container width */
+            max-width: calc(30% - 20px); /* Approximately one-third of the container width */
+            margin: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .item img {
+            max-width: 80%; /* Adjust image size */
+            height: auto;
+            margin-bottom: 10px;
+        }
+
+        #cart,
+        .receipt-container {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+            border-radius: 10px; /* Rounded corners for the white box */
+        }
+
+        .view-cart-btn,
+        .refresh-btn,
+        .confirm-order-btn,
+        .change-btn,
+        .restock-btn {
+            background-color: #ff0000; /* Red button */
+            color: #fff; /* White text */
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+
+        .refresh-btn {
+            margin-left: 10px;
+        }
+
+        .back-button {
+            display: block;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #0d6efd;
+            color: white;
+            text-align: center;
+            line-height: 50px;
+            font-size: 24px;
+            text-decoration: none;
+            margin: 20px auto;
+        }
+
+        #stocks {
+            display: none; /* Initially hide the stock details */
+            background-color: white; /* Set background color to white */
+            padding: 20px; /* Add padding for better spacing */
+            border-radius: 10px; /* Add border radius for rounded corners */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+        }
+
+        #stocks h3 {
+            margin: 0; /* Remove margin */
+        }
+
+        .restock-btn,
+        #toggleStocksBtn {
+            background-color: red;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 12px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        #toggleStocksBtn {
+            background-color: red; /* Set background color of toggle button to white */
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <img src="logo.png" alt="Pendong By Rance Logo" style="width: 200px; height: auto;">
+		 <div id="cart">
+        <h2>Shopping Cart</h2>
+        <p>Total: ₱<span id="total">0.00</span></p>
+        <button class="view-cart-btn" onclick="viewCart()">View Cart</button>
+        <button class="refresh-btn" onclick="refreshCart()">Refresh</button>
+    </div>
+    <button class="confirm-order-btn" onclick="confirmOrder()">Confirm Order</button>
+  <div id="receipt" class="receipt-container" style="display:none;">
+    <h2>Receipt</h2>
+    <p id="receiptTotal">Total: ₱0.00</p>
+    <pre id="receiptContent"></pre> <!-- Using <pre> for formatted text display -->
+</div>
+
+    </header>
+    <div id="menu">
+        <div class="menu-item">
+            <div class="item" data-stock="10">
+                <img src="1.jpg" alt="Peach">
+                <h3>WRANGLER® MEN'S COMFORT FLEX WAIST CARGO PANT IN BLACK - ₱250.00</h3>
+				<p>Stock: <span id="stock1">10</span></p>
+                <input type="number" id="qty1" value="1" min="1">
+                <button onclick="addToCart('Wrangler Cargo Pant', 250, 'qty1')">Add to Cart</button>
+               
+            </div>
+            <div class="item" data-stock="15">
+                <img src="2.jpg" alt="Mixed Berry">
+                <h3>ATG BY WRANGLER™ MEN'S SYNTHETIC UTILITY PANT IN DARK SHADOW - ₱300.00</h3>
+                 <p>Stock: <span id="stock2">15</span></p>
+                <input type="number" id="qty2" value="1" min="1">
+                <button onclick="addToCart('Wrangler Utility Pant', 300, 'qty2')">Add to Cart</button>
+              
+            </div>
+              <div class="item" data-stock="15">
+                <img src="3.jpg" alt="Mixed Berry">
+                <h3>WRANGLER® MEN'S FIVE STAR PREMIUM FLEX RELAXED FIT BOOTCUT JEAN IN SUMMIT - ₱350.00</h3>
+                <p>Stock: <span id="stock3">15</span></p>
+                <input type="number" id="qty3" value="1" min="1">
+                <button onclick="addToCart('Wrangler Utility Pant', 350, 'qty3')">Add to Cart</button>
+              
+            </div>
+			  <div class="item" data-stock="15">
+                <img src="t1.jpg" alt="Mixed Berry">
+                <h3>WHITE SHIRT - ₱150.00</h3>
+                <p>Stock: <span id="stock4">15</span></p>
+                <input type="number" id="qty4" value="1" min="1">
+                <button onclick="addToCart('WHITE SHIRT', 150, 'qty4')">Add to Cart</button>
+              
+        </div>
+		  <div class="item" data-stock="15">
+                <img src="t2.jpg" alt="Mixed Berry">
+                <h3>BLUE SMOKE SHIRT - ₱450.00</h3>
+            <p>Stock: <span id="stock5">15</span></p>
+                <input type="number" id="qty5" value="1" min="1">
+                <button onclick="addToCart('BLUE SMOKE SHIRT', 450, 'qty5')">Add to Cart</button>
+               
+        </div>
+		  <div class="item" data-stock="15">
+                <img src="t3.jpg" alt="Mixed Berry">
+                <h3>MONSTER BLUE - ₱500.00</h3>
+             <p>Stock: <span id="stock6">15</span></p>
+                <input type="number" id="qty6" value="1" min="1">
+                <button onclick="addToCart('MONSTER BLUE', 500, 'qty6')">Add to Cart</button>
+             
+        </div>
+		 <div class="item" data-stock="15">
+                <img src="p1.jpg" alt="Mixed Berry">
+                <h3>VANILLA SUMMER - ₱650.00</h3>
+                <p>Stock: <span id="stock7">15</span></p>
+                <input type="number" id="qty7" value="1" min="1">
+                <button onclick="addToCart('VANILLA SUMMER', 650, 'qty7')">Add to Cart</button>
+               
+        </div>
+		 <div class="item" data-stock="15">
+                <img src="p2.jpg" alt="Mixed Berry">
+                <h3>STRAWBERRY LUST - ₱1000.00</h3>
+               <p>Stock: <span id="stock8">15</span></p>
+                <input type="number" id="qty8" value="1" min="1">
+                <button onclick="addToCart('STRAWBERRY LUST', 1000, 'qty8')">Add to Cart</button>
+               
+        </div>
+		 <div class="item" data-stock="15">
+                <img src="p3.jpg" alt="Mixed Berry">
+                <h3>WHITE MEN  - ₱750.00</h3>
+                <p>Stock: <span id="stock9">15</span></p>
+                <input type="number" id="qty9" value="1" min="1">
+                <button onclick="addToCart('WHITE MEN', 750, 'qty9')">Add to Cart</button>
+                
+        </div>
+		 <div class="item" data-stock="15">
+                <img src="s1.jpg" alt="Mixed Berry">
+                <h3>WHITE/BLACK SANDO FOR WOMEN - ₱200.00</h3>
+               <p>Stock: <span id="stock10">15</span></p>
+                <input type="number" id="qty10" value="1" min="1">
+                <button onclick="addToCart('WHITE SANDO', 200, 'qty10')">Add to Cart</button>
+              
+        </div>
+		 <div class="item" data-stock="15">
+                <img src="s2.jpg" alt="Mixed Berry">
+                <h3>BLACK NIKE SANDO - ₱350.00</h3>
+               <p>Stock: <span id="stock11">15</span></p>
+                <input type="number" id="qty11" value="1" min="1">
+                <button onclick="addToCart('BLACK NIKE SANDO', 350, 'qty11')">Add to Cart</button>
+             
+        </div>
+		  <div class="item" data-stock="10">
+                <img src="s3.jpg" alt="Peach">
+                <h3>MUSCLE SANDO - ₱250.00</h3>
+              <p>Stock: <span id="stock12">15</span></p>
+                <input type="number" id="qty12" value="1" min="1">
+                <button onclick="addToCart('MUSCLE SANDO', 250, 'qty12')">Add to Cart</button>
+             
+            </div>
+			 <div class="item" data-stock="10">
+                <img src="b1.jpg" alt="Peach">
+                <h3>BARBIE - ₱250.00</h3>
+             <p>Stock: <span id="stock13">15</span></p>
+                <input type="number" id="qty13" value="1" min="1">
+                <button onclick="addToCart('BARBIE', 250, 'qty13')">Add to Cart</button>
+             
+            </div>
+			 <div class="item" data-stock="10">
+                <img src="r2.jpg" alt="Peach">
+                <h3>ROBOT - ₱350.00</h3>
+               <p>Stock: <span id="stock14">15</span></p>
+                <input type="number" id="qty14" value="1" min="1">
+                <button onclick="addToCart('ROBOT', 350, 'qty14')">Add to Cart</button>
+              
+            </div> <div class="item" data-stock="10">
+                <img src="c3.jpg" alt="Peach">
+                <h3>CAR TOY - ₱1500.00</h3>
+              <p>Stock: <span id="stock15">15</span></p>
+                <input type="number" id="qty15" value="1" min="1">
+                <button onclick="addToCart('CAR TOY', 250, 'qty15')">Add to Cart</button>
+             
+            </div>
+    </div>
+	</div>			   
+							<button id="toggleStocksBtn" class="restock-btn" onclick="toggleStocks()">Restock</button>
+							 <div id="stocks">
+		 <h3>WRANGLER® MEN'S COMFORT FLEX WAIST CARGO PANT IN BLACK - ₱250.00</h3> 
+		 <button class="restock-btn" onclick="restockItem('qty1')">Restock</button>
+		
+
+	  <h3>ATG BY WRANGLER™ MEN'S SYNTHETIC UTILITY PANT IN DARK SHADOW - ₱300.00</h3>
+	 
+	    <button class="restock-btn" onclick="restockItem('qty2')">Restock</button>
+		  <h3>WRANGLER® MEN'S FIVE STAR PREMIUM FLEX RELAXED FIT BOOTCUT JEAN IN SUMMIT - ₱350.00</h3>
+		   
+		 <button class="restock-btn" onclick="restockItem('qty3')">Restock</button>
+		    <h3>WHITE SHIRT - ₱150.00</h3>
+			
+			  <button class="restock-btn" onclick="restockItem('qty4')">Restock</button>
+			    <h3>BLUE SMOKE SHIRT - ₱450.00</h3>
+				  
+				 <button class="restock-btn" onclick="restockItem('qty5')">Restock</button>
+				    <h3>MONSTER BLUE - ₱500.00</h3>
+					 
+					   <button class="restock-btn" onclick="restockItem('qty6')">Restock</button>
+					      <h3>VANILLA SUMMER - ₱650.00</h3>
+						   
+						   <button class="restock-btn" onclick="restockItem('qty7')">Restock</button>
+					    <h3>STRAWBERRY LUST - ₱1000.00</h3>
+						 
+						 <button class="restock-btn" onclick="restockItem('qty8')">Restock</button>
+						  <h3>WHITE MEN  - ₱750.00</h3>
+						  
+						 <button class="restock-btn" onclick="restockItem('qty9')">Restock</button>
+						     <h3>WHITE/BLACK SANDO FOR WOMEN - ₱200.00</h3>
+							  
+							   <button class="restock-btn" onclick="restockItem('qty10')">Restock</button>
+							         <h3>BLACK NIKE SANDO - ₱350.00</h3>
+									  
+									    <button class="restock-btn" onclick="restockItem('qty11')">Restock</button>
+										   <h3>MUSCLE SANDO - ₱250.00</h3>
+										   
+										      <button class="restock-btn" onclick="restockItem('qty12')">Restock</button>
+											       <h3>BARBIE - ₱250.00</h3>
+												    
+												      <button class="restock-btn" onclick="restockItem('qty13')">Restock</button>
+													      <h3>ROBOT - ₱350.00</h3>
+														   
+														    <button class="restock-btn" onclick="restockItem('qty14')">Restock</button>
+															  <h3>CAR TOY - ₱1500.00</h3>
+															   
+															     <button class="restock-btn" onclick="restockItem('qty15')">Restock</button>
+														  
+							</div>					  
+    <section class="receipt-container">
+        <section class="receipt"></section>
+    </section>
+</section>
+   
+   
+    <script>
+	let cart = [];
+let total = 0;
+let cartItems = [];
+
+function addToCart(itemName, price, qtyId) {
+    let qty = parseInt(document.getElementById(qtyId).value);
+    let itemElement = document.getElementById(qtyId).closest('.item');
+    let stock = parseInt(itemElement.getAttribute('data-stock'));
+
+    if (qty <= stock) {
+        let itemTotal = price * qty;
+        total += itemTotal;
+        cartItems.push({ itemName: itemName, price: price, quantity: qty });
+        document.getElementById('total').textContent = total.toFixed(2);
+
+        // Deduct the stock
+        stock -= qty;
+        itemElement.setAttribute('data-stock', stock);
+
+        // Update the displayed stock
+        document.getElementById('stock' + qtyId.slice(3)).textContent = stock;
+
+    } else {
+        alert("Not enough stock available!");
+    }
+}
+
+function restockItem(qtyId) {
+    let itemElement = document.getElementById(qtyId).closest('.item');
+    let stock = parseInt(itemElement.getAttribute('data-stock'));
+    let additionalStock = parseInt(prompt("Enter additional stock:"));
+    if (!isNaN(additionalStock) && additionalStock > 0) {
+        stock += additionalStock;
+        itemElement.setAttribute('data-stock', stock);
+        document.getElementById('stock' + qtyId.slice(3)).textContent = stock;
+    } else {
+        alert("Invalid input!");
+    }
+}
+
+function viewCart() {
+    let cartContent = 'Items in Cart:\n';
+    cartItems.forEach(item => {
+        cartContent += `${item.itemName} - ₱${item.price} x ${item.quantity}\n`;
+    });
+    alert(cartContent);
+
+    // Show the discounts
+    document.getElementById('discounts').style.display = 'block';
+}
+
+function confirmOrder() {
+    if (cartItems.length === 0) {
+        alert('Your cart is empty. Please add items to the cart.');
+        return;
+    }
+
+    // Prompt for discount type
+    let discountType = prompt("Enter discount type (senior, pwd, student) or leave empty for no discount:");
+
+    let discount = 0;
+    switch(discountType.toLowerCase()) {
+        case 'senior':
+            discount = 0.20;
+            break;
+        case 'pwd':
+            discount = 0.30;
+            break;
+        case 'student':
+            discount = 0.10;
+            break;
+        case '':
+        case null:
+            discount = 0;
+            break;
+        default:
+            alert('Invalid discount type. No discount applied.');
+            discount = 0;
+            break;
+    }
+
+    let receiptContent = 'Receipt:\n';
+    let total = 0;
+    cartItems.forEach(item => {
+        receiptContent += `${item.itemName} - ₱${item.price} x ${item.quantity}\n`;
+        total += item.price * item.quantity;
+    });
+
+    let discountedTotal = total - (total * discount);
+    receiptContent += `\nTotal: ₱${total.toFixed(2)}`;
+    if (discount > 0) {
+        receiptContent += `\nDiscount (${discountType}): -₱${(total * discount).toFixed(2)}`;
+        receiptContent += `\nTotal after discount: ₱${discountedTotal.toFixed(2)}`;
+    }
+
+    // Prompt for payment amount
+    let paymentAmount = parseFloat(prompt(`Total amount is ₱${discountedTotal.toFixed(2)}. Enter payment amount:`));
+    while (isNaN(paymentAmount) || paymentAmount < discountedTotal) {
+        paymentAmount = parseFloat(prompt(`Insufficient payment. Please enter an amount greater than or equal to ₱${discountedTotal.toFixed(2)}:`));
+    }
+
+    let change = paymentAmount - discountedTotal;
+
+    receiptContent += `\nPayment: ₱${paymentAmount.toFixed(2)}`;
+    receiptContent += `\nChange: ₱${change.toFixed(2)}`;
+
+    document.getElementById('receiptTotal').innerText = `Total: ₱${discountedTotal.toFixed(2)}`;
+    document.getElementById('receipt').style.display = 'block';
+    document.getElementById('receiptContent').innerText = receiptContent;
+
+    // Hide the discounts after confirming order
+    document.getElementById('discounts').style.display = 'none';
+}
+
+// Sample HTML for receipt content display
+// <div id="receipt" class="receipt-container" style="display:none;">
+//     <h2>Receipt</h2>
+//     <p id="receiptTotal">Total: ₱0.00</p>
+//     <pre id="receiptContent"></pre>
+// </div>
+
+function updateTotal() {
+    let total = 0;
+    cartItems.forEach(item => {
+        total += item.price * item.quantity;
+    });
+    document.getElementById('total').innerText = total.toFixed(2);
+}
+
+function toggleStocks() {
+    const stocksDiv = document.getElementById('stocks');
+    stocksDiv.style.display = (stocksDiv.style.display === 'none') ? 'block' : 'none';
+    updateStockDetails();
+}
+ function refreshCart() {
+    total = 0;
+    cartItems = [];
+    document.getElementById('total').textContent = total.toFixed(2);
+
+    // Clear the receipt section when refreshing the cart
+    document.querySelector('.receipt').innerHTML = "";
+
+    // Hide the receipt container
+    document.getElementById('receipt').style.display = 'none';
+
+    // Reset the discounts section
+    document.getElementById('discounts').style.display = 'block';
+
+    // Clear any specific receipt content if necessary
+    document.getElementById('receiptTotal').innerText = 'Total: ₱0.00';
+    if (document.getElementById('receiptContent')) {
+        document.getElementById('receiptContent').innerText = '';
+    }
+
+    alert('Cart has been refreshed.');
+}
+
+function updateStockDetails() {
+    const items = document.querySelectorAll('.item');
+    const stockDetailsDiv = document.getElementById('stockDetails');
+    stockDetailsDiv.innerHTML = ''; // Clear previous details
+    items.forEach(item => {
+        const itemName = item.querySelector('h3').innerText;
+        const stockCount = item.getAttribute('data-stock');
+        stockDetailsDiv.innerHTML += `<p>${itemName} - Stock: ${stockCount}</p>`;
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    toggleStocks();
+});
+
+
+    </script>
+	 <a href="index.htm" class="back-button">↑</a>
+</body>
+</html>

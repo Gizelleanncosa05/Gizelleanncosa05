@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COMPILATION OF ACTIVITIES</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Gizelle Ann Cosa Rivera</h1>
+        <div class="navbar">
+            <ul>
+                <li><a href="zella.html" class="btn" onclick="showResume()">RESUME</a></li>
+                <li><a href="reg.html" class="btn" onclick="showRegform()">REGISTRATION FORM</a></li>
+                <li><a href="menu.htm" class="btn" onclick="showResto()">RESTO</a></li>
+                <li><a href="d.htm" class="btn" onclick="showSari()">SARI SARI STORE</a></li>
+            </ul>
+        </div>
+    </div>
+   
+
+    <script>
+        function showResume() {
+            document.getElementById('homeContent').style.display = 'block';
+            document.getElementById('aboutContent').style.display = 'none';
+            document.getElementById('menuContent').style.display = 'none';
+            document.getElementById('contactContent').style.display = 'none';
+        }
+
+        function showRegform() {
+            document.getElementById('homeContent').style.display = 'none';
+            document.getElementById('aboutContent').style.display = 'block';
+            document.getElementById('menuContent').style.display = 'none';
+            document.getElementById('contactContent').style.display = 'none';
+        }
+
+        function showResto() {
+            document.getElementById('homeContent').style.display = 'none';
+            document.getElementById('aboutContent').style.display = 'none';
+            document.getElementById('menuContent').style.display = 'block';
+            document.getElementById('contactContent').style.display = 'none';
+        }
+
+        function showSari() {
+            document.getElementById('homeContent').style.display = 'none';
+            document.getElementById('aboutContent').style.display = 'none';
+            document.getElementById('menuContent').style.display = 'none';
+            document.getElementById('contactContent').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
